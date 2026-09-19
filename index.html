@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#C45C42" />
+  <title>Rutina de las mañanas</title>
+  <style>
+    :root { --coral:#C45C42; --ink:#2B2B2B; --muted:#5C5C5C; --cream:#FDF6F0; --paper:#FFFDFB; --sage:#2D6A4F; --sage-bg:#E7F4EA; --warn:#B5472A; --warn-bg:#FDECE7; --gold-bg:#FFF4D6; --gold:#8A6D1B; --line:#E8D5C8; --fs:22px; --radius:18px; }
+    * { box-sizing:border-box; } html,body{margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink);font-size:var(--fs);line-height:1.45;padding-bottom:96px;}
+    header.app{position:sticky;top:0;z-index:20;background:var(--coral);color:#fff;padding:12px 16px calc(10px + env(safe-area-inset-top));padding-top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    header.app h1{font-size:1.05em;margin:0;} header.app .sub{font-size:.72em;opacity:.9;}
+    button.icon{min-width:44px;min-height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.18);color:#fff;font-size:22px;font-weight:700;}
+    main{max-width:720px;margin:0 auto;padding:16px;}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+    img.photo{width:100%;border-radius:14px;display:block;background:#eee;min-height:120px;}
+    .caption{font-size:.82em;color:var(--muted);margin-top:8px;text-align:center;}
+    .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    @media(max-width:420px){.pair{grid-template-columns:1fr;}}
+    h2{font-size:1.2em;color:var(--coral);margin:0 0 8px;} h3{font-size:1.02em;color:var(--sage);margin:16px 0 8px;}
+    p{margin:0 0 10px;} ol.big{padding-left:1.2em;} ol.big li{margin-bottom:12px;}
+    .box{border-radius:14px;padding:14px;margin:12px 0;} .ok{background:var(--sage-bg);} .warn{background:var(--warn-bg);} .tip{background:var(--gold-bg);}
+    .ok b{color:var(--sage);} .warn b{color:var(--warn);} .tip b{color:var(--gold);}
+    .nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+    a.btn,button.btn{display:block;width:100%;text-align:center;text-decoration:none;background:var(--coral);color:#fff;border:0;border-radius:14px;padding:16px 14px;font-size:1em;font-weight:700;}
+    a.btn.secondary,button.btn.secondary{background:#fff;color:var(--coral);border:2px solid var(--coral);} a.btn.sage{background:var(--sage);}
+    .row-btns{display:flex;gap:10px;margin:12px 0;} .row-btns .btn{flex:1;}
+    .speak-bar{position:sticky;bottom:0;z-index:15;background:#2B2B2B;color:#fff;padding:10px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;}
+    .speak-bar button{flex:1;min-height:48px;border:0;border-radius:12px;font-weight:700;}
+    .speak-bar .play{background:#F4E1C1;color:#2B2B2B;} .speak-bar .stop{background:#5C5C5C;color:#fff;}
+    .screen{display:none;} .screen.active{display:block;}
+    .counter{display:flex;align-items:center;justify-content:center;gap:16px;margin:10px 0;}
+    .counter button{width:56px;height:56px;border-radius:16px;border:2px solid var(--coral);background:#fff;color:var(--coral);font-size:28px;font-weight:800;}
+    .counter .num{font-size:1.6em;font-weight:800;min-width:2ch;text-align:center;}
+    .week{width:100%;border-collapse:collapse;font-size:.78em;}
+    .week th,.week td{border:1px solid var(--line);padding:8px 4px;text-align:center;}
+    .week th{background:var(--sage);color:#fff;} .week td.lab{text-align:left;background:var(--cream);font-weight:600;}
+    .week td.mark{cursor:pointer;font-size:1.2em;} .week td.mark.yes{background:var(--sage-bg);}
+    footer.note{font-size:.78em;color:var(--muted);text-align:center;margin:18px 0;}
+  </style>
+</head>
+<body>
+  <header class="app">
+    <div>
+      <h1 id="hdrTitle">Rutina de las mañanas</h1>
+      <div class="sub" id="hdrSub">3 ejercicios · 15 a 20 minutos</div>
+    </div>
+    <div class="tools">
+      <button class="icon" id="btnMinus" aria-label="Letra más chica">A−</button>
+      <button class="icon" id="btnPlus" aria-label="Letra más grande">A+</button>
+    </div>
+  </header>
+
+  <section class="screen active" id="home">
+    <main>
+      <div class="card" style="text-align:center">
+        <img class="photo" data-photo="85OBt" alt="Mujer sonriendo con una mancuerna al pecho" />
+        <p class="caption">Tú, tu mancuerna y un rato por la mañana.</p>
+        <h2>Fuerza con una sola mancuerna</h2>
+        <p>Hecha para alguien que no ha hecho ejercicio con técnica. Letras grandes, fotos de “así sí” y “así no”, y un botón para que te lo lean.</p>
+      </div>
+      <div class="card tip"><b>La idea</b><p>No se trata de sudar a morir. Se trata de que piernas, espalda y hombros aprendan el movimiento <b>bien</b>, para que con Saxenda no se te vaya el músculo junto con la grasa.</p></div>
+      <div class="nav-grid">
+        <a class="btn" href="#warmup">Empezar calentamiento</a>
+        <a class="btn secondary" href="#reglas">Reglas de oro</a>
+        <a class="btn secondary" href="#sentadilla">1. Sentadilla</a>
+        <a class="btn secondary" href="#remo">2. Remo</a>
+        <a class="btn secondary" href="#press">3. Press</a>
+        <a class="btn sage" href="#sesion">Sesión de hoy</a>
+      </div>
+      <p class="footer note">Si duele de verdad (pinchazo), para. El ardor de músculo sí es normal.</p>
+    </main>
+  </section>
+
+  <section class="screen" id="reglas">
+    <main>
+      <div class="card" data-speak>
+        <h2>Reglas de oro</h2>
+        <ol class="big">
+          <li>Si sientes un pinchazo agudo, mareo o dolor en una articulación, para. El ardor o el temblor del músculo sí es normal.</li>
+          <li>Nunca aguantes la respiración. Cuando haces la parte difícil, suelta el aire por la boca como si soplaras un atole caliente.</li>
+          <li>Empieza con el peso más liviano. La forma primero, el peso después.</li>
+          <li>Usa una silla firme que no se resbale. Piso plano. Tenis o pies descalzos en tapete.</li>
+          <li>Haz 2 series de 8 repeticiones. Si 8 está fácil y se ve bien, sube a 10.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <img class="photo" data-photo="LM8Sn" alt="Cómo sujetar la mancuerna al pecho" />
+        <p class="caption">Para la sentadilla: sujeta la mancuerna parada, como una jarra grande de agua.</p>
+        <p data-speak>Tienes discos de 10 libras y de 3.5. Empieza con un solo disco de 3.5, o los dos de 3.5 si la barra se siente inestable.</p>
+      </div>
+      <div class="row-btns"><a class="btn secondary" href="#home">Inicio</a><a class="btn" href="#warmup">Calentar</a></div>
+    </main>
+  </section>
+
+  <section class="screen" id="warmup">
+    <main>
+      <div class="card" data-speak>
+        <h2>Calentamiento · 3 a 4 minutos</h2>
+        <p>No brinques de la cama a cargar peso. El cuerpo en la mañana está apagado, como un carro que acaba de arrancar.</p>
+      </div>
+      <div class="card">
+        <img class="photo" data-photo="Y4T1O" alt="Marcha en el lugar" />
+        <p class="caption">Marcha en el lugar: mueve brazos y rodillas, a tu ritmo.</p>
+      </div>
+      <div class="card" data-speak>
+        <ol class="big">
+          <li>Marcha en tu lugar, 60 a 90 segundos.</li>
+          <li>Círculos de hombros: 10 hacia atrás y 10 hacia adelante.</li>
+          <li>Círculos de cadera: 5 para cada lado.</li>
+          <li>Mini sentadas sin peso: 6 veces.</li>
+        </ol>
+      </div>
+      <div class="row-btns"><a class="btn secondary" href="#home">Inicio</a><a class="btn" href="#sentadilla">A la sentadilla</a></div>
+    </main>
+  </section>
+
+  <section class="screen" id="sentadilla">
+    <main>
+      <div class="card" data-speak>
+        <h2>1. Sentadilla a la silla</h2>
+        <div class="box tip"><b>Analogía de la grúa</b><p>Eres una grúa. El mástil — tu espalda — se queda derecho. Solo se doblan caderas y rodillas. La mancuerna va pegada al pecho.</p></div>
+      </div>
+      <div class="card">
+        <div class="pair">
+          <div><img class="photo" data-photo="5BHDf" alt="Inicio de sentadilla" /><p class="caption">INICIO. Pecho arriba, silla atrás.</p></div>
+          <div><img class="photo" data-photo="2Ndr7" alt="Abajo en la sentadilla" /><p class="caption">ABAJO. Casi tocas la silla.</p></div>
+        </div>
+      </div>
+      <div class="card" data-speak>
+        <ol class="big">
+          <li>Silla detrás. Pies bajo los hombros, puntas a las 11 y la 1.</li>
+          <li>Mancuerna al pecho. Pecho orgulloso. Mira al frente.</li>
+          <li>Primero el pompís va atrás. Baja en tres tiempos.</li>
+          <li>Toca la silla un segundo. Sube empujando el piso con los talones.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <div class="pair">
+          <div><img class="photo" data-photo="wBXDt" alt="Espalda redonda" /><p class="caption">ASÍ NO. Espalda de camarón.</p></div>
+          <div><img class="photo" data-photo="tTHTW" alt="Vista de frente" /><p class="caption">Las rodillas siguen los pies, no se besan.</p></div>
+        </div>
+        <div class="box warn" data-speak><b>Errores</b><p>Mirar el piso. Rodillas que se besan. Talones que se levantan. Tirarte a la silla.</p></div>
+      </div>
+      <div class="card"><div class="counter"><button type="button" data-rep="-">−</button><div class="num" data-rep-val>0</div><button type="button" data-rep="+">+</button></div></div>
+      <div class="row-btns"><a class="btn secondary" href="#warmup">Atrás</a><a class="btn" href="#remo">Al remo</a></div>
+    </main>
+  </section>
+
+  <section class="screen" id="remo">
+    <main>
+      <div class="card" data-speak>
+        <h2>2. Remo a una mano</h2>
+        <div class="box tip"><b>Analogía del pasto</b><p>Quieres arrancar un pasto terco a la altura de tu rodilla y traerlo a tu cadera. El codo raspa la costilla.</p></div>
+      </div>
+      <div class="card">
+        <div class="pair">
+          <div><img class="photo" data-photo="hToPU" alt="Inicio del remo" /><p class="caption">INICIO. Mano en la silla. Brazo colgando.</p></div>
+          <div><img class="photo" data-photo="iwYij" alt="Remo arriba" /><p class="caption">ARRIBA. Codo cerca de las costillas.</p></div>
+        </div>
+      </div>
+      <div class="card" data-speak>
+        <ol class="big">
+          <li>Una mano se apoya en la silla. Inclínate desde las caderas.</li>
+          <li>Jala hacia la cadera. Arriba aprieta el omóplato un segundo.</li>
+          <li>Baja en tres tiempos. 8 de un lado, cambia de mano.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <img class="photo" data-photo="jcRok" alt="Remo con la espalda redonda" />
+        <p class="caption">ASÍ NO. Espalda de tortuga, hombro a la oreja.</p>
+      </div>
+      <div class="card"><div class="counter"><button type="button" data-rep="-">−</button><div class="num" data-rep-val>0</div><button type="button" data-rep="+">+</button></div></div>
+      <div class="row-btns"><a class="btn secondary" href="#sentadilla">Atrás</a><a class="btn" href="#press">Al press</a></div>
+    </main>
+  </section>
+
+  <section class="screen" id="press">
+    <main>
+      <div class="card" data-speak>
+        <h2>3. Press de hombros sentada</h2>
+        <div class="box tip"><b>Analogía del entrepaño</b><p>Guardas una caja liviana en el entrepaño de arriba. Sube hacia el techo, no hacia la pared de enfrente.</p></div>
+      </div>
+      <div class="card">
+        <div class="pair">
+          <div><img class="photo" data-photo="NLPlA" alt="Press al hombro" /><p class="caption">INICIO. Mancuerna al hombro.</p></div>
+          <div><img class="photo" data-photo="7vwfU" alt="Press arriba" /><p class="caption">ARRIBA. Hacia el techo, codo suave.</p></div>
+        </div>
+      </div>
+      <div class="card" data-speak>
+        <ol class="big">
+          <li>Siéntate derechita, pies planos.</li>
+          <li>Empuja hacia el techo. Suelta el aire al subir.</li>
+          <li>8 de un brazo, 8 del otro.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <img class="photo" data-photo="e9KOj" alt="Press empujando hacia adelante" />
+        <p class="caption">Cuidado si empujas hacia adelante o te echas como en una hamaca.</p>
+      </div>
+      <div class="card"><div class="counter"><button type="button" data-rep="-">−</button><div class="num" data-rep-val>0</div><button type="button" data-rep="+">+</button></div></div>
+      <div class="row-btns"><a class="btn secondary" href="#remo">Atrás</a><a class="btn" href="#sesion">Ver la sesión</a></div>
+    </main>
+  </section>
+
+  <section class="screen" id="sesion">
+    <main>
+      <div class="card" data-speak>
+        <h2>Cómo se ve una mañana</h2>
+        <ol class="big">
+          <li>Minuto 0 a 4: calentamiento.</li>
+          <li>Minuto 4 a 9: sentadilla. 2 series de 8.</li>
+          <li>Minuto 9 a 14: remo. 2 series de 8 por brazo.</li>
+          <li>Minuto 14 a 19: press. 2 series de 8 por brazo.</li>
+        </ol>
+      </div>
+      <div class="card tip" data-speak><b>La regla del atole</b><p>Cuando el peso sube: sopla el aire. Cuando baja: toma aire por la nariz.</p></div>
+      <div class="row-btns"><a class="btn secondary" href="#hoja">Hoja de la semana</a><a class="btn" href="#warmup">Empezar ahora</a></div>
+    </main>
+  </section>
+
+  <section class="screen" id="hoja">
+    <main>
+      <div class="card">
+        <h2>Hoja de la semana</h2>
+        <p>Toca una casilla para marcar. Se guarda en este teléfono.</p>
+        <div style="overflow-x:auto"><table class="week" id="weekTable"></table></div>
+      </div>
+      <div class="row-btns"><a class="btn secondary" href="#home">Inicio</a><a class="btn" href="#sesion">Ver sesión</a></div>
+    </main>
+  </section>
+
+  <div class="speak-bar">
+    <button class="play" id="btnSpeak">Escuchar esta pantalla</button>
+    <button class="stop" id="btnStop">Parar</button>
+  </div>
+
+<script>
+(function(){
+  const RAW = "https://raw.githubusercontent.com/radiolactive/rutina-mananas/main/img/";
+  function loadPhotos(){
+    document.querySelectorAll("img[data-photo]").forEach(function(img){
+      var k = img.getAttribute("data-photo");
+      function apply(t){
+        var s=(t||"").replace(/\s+/g,"");
+        if(s.length>80) img.src="data:image/jpeg;base64,"+s;
+        else throw new Error("short");
+      }
+      fetch("img/"+k+".b64").then(function(r){return r.ok?r.text():Promise.reject();}).then(apply)
+        .catch(function(){
+          return fetch(RAW+k+".b64").then(function(r){return r.ok?r.text():Promise.reject();}).then(apply);
+        }).catch(function(){ img.alt="Foto no disponible"; });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", loadPhotos);
+
+  const LS_FONT="rutina.font", LS_WEEK="rutina.week", MIN=18, MAX=34, STEP=2;
+  let font=parseInt(localStorage.getItem(LS_FONT)||"22",10);
+  function applyFont(){ document.documentElement.style.setProperty("--fs", font+"px"); localStorage.setItem(LS_FONT,String(font)); }
+  applyFont();
+  document.getElementById("btnPlus").onclick=()=>{font=Math.min(MAX,font+STEP);applyFont();};
+  document.getElementById("btnMinus").onclick=()=>{font=Math.max(MIN,font-STEP);applyFont();};
+
+  const titles={home:["Rutina de las mañanas","3 ejercicios · 15 a 20 minutos"],reglas:["Reglas de oro","Léelas o escúchalas"],warmup:["Calentamiento","3 a 4 minutos"],sentadilla:["Sentadilla a la silla","Ejercicio 1 · piernas"],remo:["Remo a una mano","Ejercicio 2 · espalda"],press:["Press de hombros","Ejercicio 3 · hombros"],sesion:["Sesión completa","El orden de cada mañana"],hoja:["Hoja de la semana","Toca para marcar"]};
+  function stopSpeak(){ try{speechSynthesis.cancel();}catch(e){} }
+  function show(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    const el=document.getElementById(id)||document.getElementById("home");
+    el.classList.add("active"); window.scrollTo(0,0);
+    const t=titles[el.id]||titles.home;
+    document.getElementById("hdrTitle").textContent=t[0];
+    document.getElementById("hdrSub").textContent=t[1];
+    stopSpeak(); location.hash = el.id==="home"?"":el.id;
+  }
+  function route(){ show((location.hash||"#home").replace("#","")||"home"); }
+  window.addEventListener("hashchange", route);
+  document.querySelectorAll("a[href^='#']").forEach(a=>a.addEventListener("click",e=>{e.preventDefault(); const id=a.getAttribute("href").slice(1); history.pushState(null,"","#"+id); show(id);}));
+  route();
+
+  document.querySelectorAll("[data-rep]").forEach(btn=>btn.addEventListener("click",()=>{
+    const val=btn.parentElement.querySelector("[data-rep-val]");
+    let n=parseInt(val.textContent,10)||0;
+    n=btn.getAttribute("data-rep")==="+"?n+1:Math.max(0,n-1);
+    val.textContent=n;
+  }));
+
+  const days=["L","M","X","J","V","S","D"], rows=["Calentar","Sentadilla","Remo","Press"];
+  function weekKey(){ const d=new Date(); const onejan=new Date(d.getFullYear(),0,1); const week=Math.ceil((((d-onejan)/86400000)+onejan.getDay()+1)/7); return d.getFullYear()+"-w"+week; }
+  function loadWeek(){ try{return JSON.parse(localStorage.getItem(LS_WEEK+weekKey())||"{}");}catch(e){return {};} }
+  function saveWeek(data){ localStorage.setItem(LS_WEEK+weekKey(), JSON.stringify(data)); }
+  function drawWeek(){
+    const table=document.getElementById("weekTable"); if(!table) return;
+    const data=loadWeek();
+    let html="<tr><th></th>"+days.map(d=>"<th>"+d+"</th>").join("")+"</tr>";
+    rows.forEach((r,ri)=>{ html+="<tr><td class='lab'>"+r+"</td>"; days.forEach((_,di)=>{ const k=ri+"-"+di; html+="<td class='mark"+(data[k]?" yes":"")+"' data-k='"+k+"'>"+(data[k]?"✓":"")+"</td>"; }); html+="</tr>"; });
+    table.innerHTML=html;
+    table.querySelectorAll(".mark").forEach(td=>td.addEventListener("click",()=>{ const d=loadWeek(); const k=td.getAttribute("data-k"); d[k]=!d[k]; saveWeek(d); drawWeek(); }));
+  }
+  drawWeek();
+
+  let voices=[];
+  function loadVoices(){ voices=speechSynthesis.getVoices(); }
+  loadVoices();
+  if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+  function pickVoice(){ loadVoices(); return voices.find(v=>/es-MX/i.test(v.lang))||voices.find(v=>/es-US/i.test(v.lang))||voices.find(v=>/^es/i.test(v.lang))||null; }
+  function screenText(){ const sc=document.querySelector(".screen.active"); const parts=[]; sc.querySelectorAll("[data-speak]").forEach(n=>parts.push(n.innerText)); return (parts.length?parts.join(".\n"):sc.innerText).trim(); }
+  function speak(text){ stopSpeak(); const u=new SpeechSynthesisUtterance(text); const v=pickVoice(); if(v) u.voice=v; u.lang=(v&&v.lang)||"es-MX"; u.rate=0.92; speechSynthesis.speak(u); }
+  document.getElementById("btnSpeak").onclick=()=>speak(screenText());
+  document.getElementById("btnStop").onclick=stopSpeak;
+})();
+</script>
+</body>
+</html>
